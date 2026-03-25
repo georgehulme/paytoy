@@ -64,17 +64,17 @@ impl TryFrom<TransactionRecord> for TransactionCommand {
                 })
             }
             TransactionType::Dispute => Ok(TransactionCommand::ProcessDispute {
-                tx_id: record.tx_id,
+                target_tx_id: record.tx_id,
                 client_id: record.client_id,
                 action: DisputeAction::Open,
             }),
             TransactionType::Resolve => Ok(TransactionCommand::ProcessDispute {
-                tx_id: record.tx_id,
+                target_tx_id: record.tx_id,
                 client_id: record.client_id,
                 action: DisputeAction::Resolve,
             }),
             TransactionType::Chargeback => Ok(TransactionCommand::ProcessDispute {
-                tx_id: record.tx_id,
+                target_tx_id: record.tx_id,
                 client_id: record.client_id,
                 action: DisputeAction::Chargeback,
             }),
@@ -105,7 +105,7 @@ fn process_transactions(
                 if let Err(e) = ledger.process_transaction(command) {
                     error!(err=?e, "Error processing transaction");
                 }
-            },
+            }
             Err(e) => error!(err=?e, "Error converting transaction record to system command"),
         }
     }
@@ -148,17 +148,21 @@ fn main() {
 
     let transactions = reader
         .into_deserialize::<TransactionRecord>()
-        .filter(|result| {
-            if let Err(e) = result {
+        .map(|result| match result {
+            Ok(record) => record,
+            Err(e) => {
+                // CSV is malformed, we shouldn't process this.
                 error!(err=?e, "Error parsing CSV record");
-                return false;
+                std::process::exit(1);
             }
-            true
-        })
-        .map(|result| result.unwrap());
+        });
 
-    let mut ledger = Ledger::new();
-    let account_records = process_transactions(&mut ledger, transactions);
+    let mut ledger = Ledger::default();
+    let account_records = {
+        let mut records = process_transactions(&mut ledger, transactions);
+        records.sort_by_key(|r| r.id);
+        records
+    };
 
     let mut writer = csv::WriterBuilder::new()
         .has_headers(true)

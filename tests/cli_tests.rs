@@ -1,5 +1,4 @@
 use assert_cmd::Command;
-use predicates::prelude::*;
 use std::fs;
 
 #[test]
@@ -36,5 +35,5 @@ fn test_invalid_csv_format() {
     cmd.arg(input_path);
     cmd.assert()
         .failure()
-        .stderr(predicates::str::contains("CSV error"));
+        .stderr(predicates::str::contains("Error parsing CSV record"));
 }
