@@ -1,0 +1,12 @@
+[package]
+name = "paytoy"
+version = "0.1.0"
+edition = "2024"
+authors = [
+  "George Hulme <georgehulme2@gmail.com>"
+]
+
+[lib]
+name = "paytoy_engine"
+
+[dependencies]
