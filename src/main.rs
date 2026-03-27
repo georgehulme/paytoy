@@ -137,7 +137,7 @@ fn main() {
 
     let reader = match csv::ReaderBuilder::new()
         .trim(csv::Trim::All)
-        .from_path(cli.input_path)
+        .from_path(&cli.input_path)
     {
         Ok(reader) => reader,
         Err(e) => {
@@ -151,8 +151,8 @@ fn main() {
         .map(|result| match result {
             Ok(record) => record,
             Err(e) => {
-                // CSV is malformed, we shouldn't process this.
-                error!(err=?e, "Error parsing CSV record");
+                // CSV is malformed, we shouldn't process this. We will print an error message detailing the issue and exit immediately.
+                error!(path=?cli.input_path, err=?e, "Error parsing CSV record");
                 std::process::exit(1);
             }
         });
