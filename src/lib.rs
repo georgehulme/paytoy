@@ -184,7 +184,6 @@ mod tests {
         assert_eq!(account.locked, expected_locked);
     }
 
-    // TODO: Test Successful Deposit and Withdrawal
     #[test]
     fn test_successful_deposit_and_withdrawal() {
         let mut ledger = Ledger::default();
@@ -211,7 +210,6 @@ mod tests {
         assert_account_state(&ledger, 1, 50.into(), 0.into(), false);
     }
 
-    // TOOD: Test withdrawal with insufficient funds
     #[test]
     fn test_withdrawal_insufficient_funds() {
         let mut ledger = Ledger::default();
@@ -237,7 +235,6 @@ mod tests {
         assert_account_state(&ledger, 1, 100.into(), 0.into(), false);
     }
 
-    // TODO: Test dispute and resolution flow
     #[test]
     fn test_dispute_and_resolution_flow() {
         let mut ledger = Ledger::default();
@@ -275,7 +272,6 @@ mod tests {
         assert_account_state(&ledger, 1, 100.into(), 0.into(), false);
     }
 
-    // TODO: Test dispute and chargeback flow
     #[test]
     fn test_dispute_and_chargeback_flow() {
         let mut ledger = Ledger::default();
@@ -313,7 +309,6 @@ mod tests {
         assert_account_state(&ledger, 1, 0.into(), 0.into(), true);
     }
 
-    // TODO: Test lock account
     #[test]
     fn test_lock_account() {
         let mut ledger = Ledger::default();
@@ -389,7 +384,6 @@ mod tests {
         assert_account_state(&ledger, 1, 0.into(), 50.into(), true);
     }
 
-    // TODO: Test invalid dispute
     #[test]
     fn test_invalid_dispute() {
         let mut ledger = Ledger::default();
